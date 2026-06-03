@@ -45,8 +45,8 @@ const streamUrls = [
     url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
   },
   {
-    name: "Test Channel 11",
-    url: "http://198.195.239.50:8095/Tsports/tracks-v1a1/mono.m3u8",
+    name: "Sports",
+    url: "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8",
   },
 ];
 
