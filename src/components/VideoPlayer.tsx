@@ -8,102 +8,180 @@ interface VideoPlayerProps {
   channelName: string
 }
 
-export default function VideoPlayer({ streamUrl, streamType, channelName }: VideoPlayerProps) {
+export default function VideoPlayer({
+  streamUrl,
+  streamType,
+  channelName,
+}: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  // Store the active HLS instance
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hlsRef = useRef<any>(null)
-  const [error, setError] = useState<string | null>(null)
+
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const video = videoRef.current
+
     if (!video) return
 
-    setError(null)
-    setLoading(true)
+    let cancelled = false
 
-    // Destroy previous HLS instance
+    setLoading(true)
+    setError(null)
+
+    // Destroy any existing HLS instance before creating a new one
     if (hlsRef.current) {
-      hlsRef.current.destroy?.()
+      hlsRef.current.destroy()
       hlsRef.current = null
     }
 
+    // Helper function for autoplay
+    const playVideo = async () => {
+      try {
+        await video.play()
+      } catch {
+        // Ignore autoplay restrictions
+      }
+    }
+
+    // DASH playback is currently not supported
     if (streamType === 'dash') {
-      setError('DASH stream — এই channel এর অন্য source try করুন।')
+      setError(
+        'DASH streams are not currently supported. Please try another source.'
+      )
       setLoading(false)
       return
     }
 
-    let cancelled = false
+    // Dynamically import HLS.js to avoid SSR issues
+    import('hls.js')
+      .then(({ default: Hls }) => {
+        if (cancelled || !videoRef.current) return
 
-    // ✅ Dynamic import — SSR এ load হয় না, তাই localStorage error নেই
-    import('hls.js').then(({ default: Hls }) => {
-      if (cancelled || !videoRef.current) return
+        // Use HLS.js when supported
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+          })
 
-      if (Hls.isSupported()) {
-        const hls = new Hls({ enableWorker: false, lowLatencyMode: true })
-        hlsRef.current = hls
+          hlsRef.current = hls
 
-        hls.loadSource(streamUrl)
-        hls.attachMedia(video)
+          hls.loadSource(streamUrl)
+          hls.attachMedia(video)
 
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          if (cancelled) return
-          setLoading(false)
-          video.play().catch(() => {})
-        })
+          hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+            if (cancelled) return
 
-        hls.on(Hls.Events.ERROR, (_: unknown, data: { fatal: boolean }) => {
-          if (data.fatal) {
-            setError('Stream load হয়নি। Channel টি এই মুহূর্তে offline থাকতে পারে।')
+            setLoading(false)
+            await playVideo()
+          })
+
+          hls.on(Hls.Events.ERROR, (_, data) => {
+            if (!data.fatal) return
+
+            console.error('HLS Fatal Error:', data)
+
+            setError(
+              'Unable to load the stream. The channel may currently be offline.'
+            )
+
+            setLoading(false)
+
+            hls.destroy()
+          })
+
+          return
+        }
+
+        // Safari and some browsers support HLS natively
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = streamUrl
+
+          const handleLoaded = async () => {
+            setLoading(false)
+            await playVideo()
+          }
+
+          const handleError = () => {
+            setError('Failed to load the stream.')
             setLoading(false)
           }
-        })
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari native HLS
-        video.src = streamUrl
-        video.addEventListener('loadedmetadata', () => {
-          setLoading(false)
-          video.play().catch(() => {})
-        }, { once: true })
-        video.addEventListener('error', () => {
-          setError('Stream load হয়নি।')
-          setLoading(false)
-        }, { once: true })
-      } else {
-        setError('আপনার browser HLS streaming support করে না।')
+
+          video.addEventListener('loadedmetadata', handleLoaded, {
+            once: true,
+          })
+
+          video.addEventListener('error', handleError, {
+            once: true,
+          })
+
+          return
+        }
+
+        // Browser does not support HLS playback
+        setError('Your browser does not support HLS streaming.')
         setLoading(false)
-      }
-    }).catch(() => {
-      if (!cancelled) {
-        setError('Player load করতে সমস্যা হয়েছে।')
-        setLoading(false)
-      }
-    })
+      })
+      .catch((err) => {
+        console.error('HLS Import Error:', err)
+
+        if (!cancelled) {
+          setError('Failed to initialize the video player.')
+          setLoading(false)
+        }
+      })
 
     return () => {
       cancelled = true
-      hlsRef.current?.destroy?.()
-      hlsRef.current = null
+
+      if (hlsRef.current) {
+        hlsRef.current.destroy()
+        hlsRef.current = null
+      }
+
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
     }
   }, [streamUrl, streamType])
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden">
+    <div className="relative w-full aspect-video overflow-hidden rounded-2xl bg-black">
       {loading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-10">
-          <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-3" />
-          <p className="text-white/70 text-sm">Loading {channelName}...</p>
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/90">
+          <div className="mb-3 h-10 w-10 animate-spin rounded-full border-4 border-red-500 border-t-transparent" />
+          <p className="text-sm text-white/70">
+            Loading {channelName}...
+          </p>
         </div>
       )}
+
       {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-10 text-center p-6">
-          <div className="text-4xl mb-3">📡</div>
-          <p className="text-white font-semibold text-lg mb-1">Stream Unavailable</p>
-          <p className="text-white/50 text-sm">{error}</p>
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/90 p-6 text-center">
+          <div className="mb-3 text-4xl">📡</div>
+
+          <h3 className="mb-1 text-lg font-semibold text-white">
+            Stream Unavailable
+          </h3>
+
+          <p className="text-sm text-white/60">
+            {error}
+          </p>
         </div>
       )}
-      <video ref={videoRef} className="w-full h-full" controls playsInline autoPlay muted />
+
+      <video
+        ref={videoRef}
+        className="h-full w-full"
+        controls
+        playsInline
+        autoPlay
+        muted={false}
+      />
     </div>
   )
 }
