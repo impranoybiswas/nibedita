@@ -176,11 +176,12 @@ export default function VideoPlayer({
 
       <video
         ref={videoRef}
-        className="h-full w-full"
+        className="h-full w-full shadow-2xl"
         controls
         playsInline
         autoPlay
         muted={false}
+  
       />
     </div>
   )
