@@ -44,12 +44,16 @@ const streamUrls = [
     name: "Test Channel 10",
     url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
   },
+  {
+    name: "Test Channel 11",
+    url: "http://198.195.239.50:8095/Tsports/tracks-v1a1/mono.m3u8",
+  },
 ];
 
 export default function HomePage() {
   const [currentStream, setCurrentStream] = useState(streamUrls[0]);
   return (
-    <div>
+    <div className="space-y-4">
       <div>
         <VideoPlayer
           streamUrl={currentStream.url}
@@ -58,8 +62,14 @@ export default function HomePage() {
         />
       </div>
       <div className="flex flex-wrap gap-3 items-center">
-        {streamUrls.map((url, index) => (
-          <button className={`bg-blue-400 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors ${currentStream.url === url.url ? "bg-blue-600" : ""}`} key={url.url} onClick={() => setCurrentStream(url)}>{url.name}</button>
+        {streamUrls.map((url) => (
+          <button
+            className={`bg-blue-400 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors ${currentStream.url === url.url ? "bg-blue-600" : ""}`}
+            key={url.url}
+            onClick={() => setCurrentStream(url)}
+          >
+            {url.name}
+          </button>
         ))}
       </div>
     </div>
