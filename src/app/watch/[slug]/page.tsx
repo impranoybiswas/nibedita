@@ -54,7 +54,6 @@ export default async function WatchPage({ params }: Props) {
                   src={channel.logo}
                   alt={channel.name}
                   className="w-full h-full object-contain p-1"
-                  onError={() => {}}
                 />
               ) : (
                 <span className="text-2xl">📺</span>
