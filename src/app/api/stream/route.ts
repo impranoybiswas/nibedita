@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Allowed hosts to proxy (security: prevent open proxy abuse)
-// Add any new stream hosts here
 const ALLOWED_HOSTS = [
   "owrcovcrpy.gpcdn.net",
   "byphdgllyk.gpcdn.net",
@@ -16,49 +14,28 @@ const ALLOWED_HOSTS = [
   "ncare.live",
   "youtube-nocookie.com",
   "bozztv.com",
-  "cors-proxy.cooks.fyi",
+  "app.ncare.live",
 ];
 
+/* ----------------------------
+   HOST VALIDATION
+-----------------------------*/
 function isAllowedHost(url: string): boolean {
   try {
-    const { hostname } = new URL(url);
+    const hostname = new URL(url).hostname;
+
     return ALLOWED_HOSTS.some(
-      (allowed) => hostname === allowed || hostname.endsWith("." + allowed),
+      (h) => hostname === h || hostname.endsWith(`.${h}`),
     );
   } catch {
     return false;
   }
 }
 
-/**
- * Rewrites a relative or absolute URL found in an M3U8 playlist
- * so that it goes through this proxy instead of the origin server.
- */
-function rewriteM3u8Line(line: string, baseUrl: string): string {
-  const trimmed = line.trim();
-
-  // Skip empty lines, comments, and EXT tags (except URI= values inside tags)
-  if (
-    trimmed === "" ||
-    (trimmed.startsWith("#") && !trimmed.includes("URI="))
-  ) {
-    // Handle URI= attributes inside tags like #EXT-X-KEY and #EXT-X-MAP
-    return line.replace(/URI="([^"]+)"/g, (_, uri) => {
-      const absolute = resolveUrl(uri, baseUrl);
-      return `URI="/api/stream?url=${encodeURIComponent(absolute)}"`;
-    });
-  }
-
-  // Lines that are segment URLs (not starting with #)
-  if (!trimmed.startsWith("#")) {
-    const absolute = resolveUrl(trimmed, baseUrl);
-    return `/api/stream?url=${encodeURIComponent(absolute)}`;
-  }
-
-  return line;
-}
-
-function resolveUrl(url: string, base: string): string {
+/* ----------------------------
+   URL RESOLVER
+-----------------------------*/
+function resolveUrl(url: string, base: string) {
   try {
     return new URL(url, base).toString();
   } catch {
@@ -66,101 +43,135 @@ function resolveUrl(url: string, base: string): string {
   }
 }
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const targetUrl = searchParams.get("url");
+/* ----------------------------
+   M3U8 REWRITER
+-----------------------------*/
+function rewriteM3U8(line: string, baseUrl: string): string {
+  const trimmed = line.trim();
 
-  if (!targetUrl) {
+  // Handle URI inside tags (#EXT-X-KEY, #EXT-X-MAP)
+  if (trimmed.includes('URI="')) {
+    return line.replace(/URI="([^"]+)"/g, (_, uri) => {
+      const abs = resolveUrl(uri, baseUrl);
+      return `URI="/api/stream?url=${encodeURIComponent(abs)}"`;
+    });
+  }
+
+  // Skip comments
+  if (trimmed.startsWith("#")) return line;
+
+  // Rewrite segment URL
+  if (trimmed.length > 0) {
+    const abs = resolveUrl(trimmed, baseUrl);
+    return `/api/stream?url=${encodeURIComponent(abs)}`;
+  }
+
+  return line;
+}
+
+/* ----------------------------
+   MAIN HANDLER
+-----------------------------*/
+export async function GET(req: NextRequest) {
+  const url = req.nextUrl.searchParams.get("url");
+
+  if (!url) {
     return NextResponse.json(
       { error: "Missing url parameter" },
       { status: 400 },
     );
   }
 
-  const decodedUrl = decodeURIComponent(targetUrl);
+  const decodedUrl = decodeURIComponent(url);
 
   if (!isAllowedHost(decodedUrl)) {
     return NextResponse.json({ error: "Host not allowed" }, { status: 403 });
   }
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
     const upstream = await fetch(decodedUrl, {
+      signal: controller.signal,
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0",
         Referer: new URL(decodedUrl).origin + "/",
         Origin: new URL(decodedUrl).origin,
         Accept: "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
       },
       redirect: "follow",
     });
 
+    clearTimeout(timeoutId);
+
     if (!upstream.ok) {
       return NextResponse.json(
-        { error: `Upstream returned ${upstream.status}` },
+        { error: `Upstream error ${upstream.status}` },
         { status: upstream.status },
       );
     }
 
-    const contentType = upstream.headers.get("content-type") ?? "";
+    const contentType = upstream.headers.get("content-type") || "";
 
-    // M3U8 প্লেলিস্ট হ্যান্ডলিং
-    if (
+    /* ----------------------------
+       M3U8 HANDLING
+    -----------------------------*/
+    const isM3U8 =
       decodedUrl.includes(".m3u8") ||
       contentType.includes("mpegurl") ||
-      contentType.includes("x-mpegURL")
-    ) {
+      contentType.includes("x-mpegURL");
+
+    if (isM3U8) {
       const text = await upstream.text();
-      const lines = text.split("\n");
-      const rewritten = lines.map((line) => rewriteM3u8Line(line, decodedUrl));
-      const body = rewritten.join("\n");
+
+      const body = text
+        .split("\n")
+        .map((line) => rewriteM3U8(line, decodedUrl))
+        .join("\n");
 
       return new NextResponse(body, {
-        status: 200,
         headers: {
           "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Range",
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
+          "Cache-Control": "no-cache",
         },
       });
     }
 
-    // বাইনারি ডেটা (ভিডিও সেগমেন্ট)
+    /* ----------------------------
+       BINARY STREAM (TS, MP4)
+    -----------------------------*/
     const buffer = await upstream.arrayBuffer();
 
     return new NextResponse(buffer, {
-      status: 200,
       headers: {
         "Content-Type": contentType || "video/MP2T",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD",
-        "Access-Control-Allow-Headers": "Content-Type, Range",
         "Cache-Control": "public, max-age=3600",
-        "Content-Length": buffer.byteLength.toString(),
       },
     });
   } catch (err) {
-    console.error("[Stream Proxy] Error:", err);
-    return NextResponse.json(
-      { error: "Failed to fetch stream" },
-      { status: 500 },
-    );
+    if (err instanceof Error && err.name === "AbortError") {
+      return NextResponse.json(
+        { error: "Upstream timed out" },
+        { status: 504 },
+      );
+    }
+
+    console.error("[Stream Proxy Error]", err);
+    return NextResponse.json({ error: "Stream fetch failed" }, { status: 500 });
   }
 }
 
-// OPTIONS method এর জন্য CORS
+/* ----------------------------
+   CORS PRE-FLIGHT
+-----------------------------*/
 export async function OPTIONS() {
   return new NextResponse(null, {
-    status: 200,
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Range",
     },
   });

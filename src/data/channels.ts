@@ -106,7 +106,7 @@ export const channels: Channel[] = [
     slug: "deepto-tv",
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/00/Logo_of_Deepto_TV.svg/1280px-Logo_of_Deepto_TV.svg.png",
     group: "Bangla",
-    streamUrl: "https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8",
+    streamUrl: "https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8",
     streamType: "hls",
   },
   {
@@ -159,7 +159,7 @@ export const channels: Channel[] = [
   {
     id: "044",
     name: "T Sports Backup",
-    slug: "t-sports-backup",
+    slug: "t-sports-backup-2",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
     group: "Live",
     streamUrl: "https://tvsen7.aynaott.com/tsports-hd/index.m3u8",
@@ -280,9 +280,8 @@ export const channels: Channel[] = [
     name: "Desh TV",
     slug: "desh-tv",
     logo: "https://upload.wikimedia.org/wikipedia/commons/2/25/Desh_tv_logo.jpg",
-    group: "Movies",
-    streamUrl:
-      "https://bozztv.com/rongo/rongo-DeshTV/tracks-v1a1/mono.m3u8",
+    group: "Bangla",
+    streamUrl: "https://bozztv.com/rongo/rongo-DeshTV/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
   {
@@ -291,8 +290,17 @@ export const channels: Channel[] = [
     slug: "ptv-sports",
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/PTV_Sports.png/250px-PTV_Sports.png",
     group: "Sports",
+    streamUrl: "https://tvsen5.aynaott.com/PtvSports/tracks-v1a1/mono.ts.m3u8",
+    streamType: "hls",
+  },
+  {
+    id: "031",
+    name: "ATN Bangla",
+    slug: "atn-bangla",
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/44/ATN_Bangla_logo.svg/1280px-ATN_Bangla_logo.svg.png",
+    group: "Bangla",
     streamUrl:
-      "https://tvsen5.aynaott.com/PtvSports/tracks-v1a1/mono.ts.m3u8",
+      "https://app.ncare.live/live-orgin/atnbanglauk-off.stream/playlist.m3u8",
     streamType: "hls",
   },
 ];

@@ -27,8 +27,15 @@ export default function VideoPlayer({
   const [error, setError] = useState<string | null>(null);
 
   const isDash = streamType === "dash";
-
   const proxiedUrl = `/api/stream?url=${encodeURIComponent(streamUrl)}`;
+
+  // Reset state during render when stream changes (avoids synchronous setState in effect)
+  const [prevProxiedUrl, setPrevProxiedUrl] = useState(proxiedUrl);
+  if (proxiedUrl !== prevProxiedUrl) {
+    setPrevProxiedUrl(proxiedUrl);
+    setLoading(true);
+    setError(null);
+  }
 
   useEffect(() => {
     const video = videoRef.current;
@@ -36,14 +43,15 @@ export default function VideoPlayer({
 
     let cancelled = false;
 
-    setLoading(true);
-    setError(null);
-
     const cleanup = () => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
+
+      // Clear native video callbacks to avoid stale handlers
+      video.onloadedmetadata = null;
+      video.onerror = null;
 
       video.pause();
       video.removeAttribute("src");
@@ -103,7 +111,7 @@ export default function VideoPlayer({
             console.error("HLS Error:", data);
 
             setError(
-              "Stream unavailable. Channel may be offline or restricted."
+              "Stream unavailable. Channel may be offline or restricted.",
             );
             setLoading(false);
 
@@ -134,9 +142,7 @@ export default function VideoPlayer({
       {loading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-500 border-t-transparent" />
-          <p className="mt-2 text-sm text-white/70">
-            Loading {channelName}...
-          </p>
+          <p className="mt-2 text-sm text-white/70">Loading {channelName}...</p>
         </div>
       )}
 
