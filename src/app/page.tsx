@@ -1,77 +1,129 @@
 "use client";
 
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
+import Image from "next/image";
 import VideoPlayer from "@/components/VideoPlayer";
-
-const streamUrls = [
-  {
-    name: "Test Channel",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 2",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 3",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 4",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 5",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 6",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 7",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 8",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 9",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8",
-  },
-  {
-    name: "Test Channel 10",
-    url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
-  },
-  {
-    name: "Sports",
-    url: "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8",
-  },
-];
+import { channels } from "@/data/channels";
+import Link from "next/link";
 
 export default function HomePage() {
-  const [currentStream, setCurrentStream] = useState(streamUrls[0]);
+  const [currentChannel, setCurrentChannel] = useState(channels[0]);
+  const [search, setSearch] = useState("");
+
+  const filteredChannels = useMemo(() => {
+    return channels.filter((channel) =>
+      channel.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [search]);
+
   return (
-    <div className="space-y-4">
-      <div>
-        <VideoPlayer
-          streamUrl={currentStream.url}
-          streamType="hls"
-          channelName="Test Channel"
-        />
-      </div>
-      <div className="flex flex-wrap gap-3 items-center">
-        {streamUrls.map((url) => (
-          <button
-            className={`bg-blue-400 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors ${currentStream.url === url.url ? "bg-blue-600" : ""}`}
-            key={url.url}
-            onClick={() => setCurrentStream(url)}
-          >
-            {url.name}
-          </button>
-        ))}
-      </div>
-    </div>
+    <main className="min-h-screen bg-gradient-to-b from-zinc-950 via-black to-zinc-900 text-white">
+      <section className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/10">
+        {/* Navbar */}
+        <nav className="h-10 text-white flex items-end justify-center font-bold text-xl">
+          <span className="text-blue-500">Nibedita</span>TV
+        </nav>
+
+        {/* Player */}
+
+        <div className="max-w-7xl mx-auto p-3">
+          <div className="overflow-hidden rounded-2xl border border-white/10">
+            <VideoPlayer
+              streamUrl={currentChannel.streamUrl}
+              streamType="hls"
+              channelName={currentChannel.name}
+            />
+          </div>
+
+          <div className="flex items-center gap-3 mt-3">
+            <div className="relative h-12 w-12 bg-white rounded-lg overflow-hidden">
+              <Image
+                src={currentChannel.logo}
+                alt={currentChannel.name}
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+
+            <div>
+              <h2 className="font-bold text-lg">{currentChannel.name}</h2>
+
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-sm text-red-400">LIVE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content */}
+      <section className="max-w-7xl mx-auto px-4 py-6">
+        {/* Search */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search channels..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 outline-none backdrop-blur-md focus:border-blue-500"
+          />
+        </div>
+
+        {/* Channels */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {filteredChannels.map((channel) => {
+            const active = currentChannel.id === channel.id;
+
+            return (
+              <button
+                key={channel.id}
+                onClick={() => setCurrentChannel(channel)}
+                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 p-4 text-left ${
+                  active
+                    ? "bg-blue-600 border-blue-500 shadow-lg shadow-blue-600/30 scale-[1.02]"
+                    : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-blue-500/40"
+                }
+                `}
+              >
+                {active && (
+                  <div className="absolute top-2 right-2">
+                    <span className="bg-red-500 text-xs px-2 py-1 rounded-full">
+                      LIVE
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex flex-col items-center text-center">
+                  <div className="bg-white rounded-xl p-2 h-20 w-20 flex items-center justify-center mb-3">
+                    <Image
+                      src={channel.logo}
+                      alt={channel.name}
+                      width={70}
+                      height={70}
+                      className="object-contain"
+                    />
+                  </div>
+
+                  <h3 className="font-semibold text-sm line-clamp-2">
+                    {channel.name}
+                  </h3>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+      {/* Footer */}
+      <footer className="h-14 mt-12 text-white flex items-center justify-center text-sm">
+        Created by
+        <Link
+          className="font-semibold text-blue-500 ml-2"
+          href="https://impranoybiswas.vercel.app"
+        >
+          Pranoy Biswas
+        </Link>
+      </footer>
+    </main>
   );
 }

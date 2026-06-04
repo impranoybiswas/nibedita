@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react";
 
 interface VideoPlayerProps {
-  streamUrl: string
-  streamType: 'hls' | 'dash'
-  channelName: string
+  streamUrl: string;
+  streamType: "hls" | "dash";
+  channelName: string;
 }
 
 export default function VideoPlayer({
@@ -13,154 +13,155 @@ export default function VideoPlayer({
   streamType,
   channelName,
 }: VideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Store the active HLS instance
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const hlsRef = useRef<any>(null)
+  const hlsRef = useRef<any>(null);
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Adjust state during render when a new stream is selected
+  // This avoids synchronous setState calls within useEffect
+  const [prevStreamUrl, setPrevStreamUrl] = useState(streamUrl);
+  if (streamUrl !== prevStreamUrl) {
+    setPrevStreamUrl(streamUrl);
+    setLoading(true);
+    setError(null);
+  }
+
+  // Derive DASH error state to avoid synchronous state updates in effects
+  const isDashUnsupported = streamType === "dash";
+  const displayError = isDashUnsupported
+    ? "DASH streams are not currently supported. Please try another source."
+    : error;
+  const displayLoading = isDashUnsupported ? false : loading;
 
   useEffect(() => {
-    const video = videoRef.current
+    const video = videoRef.current;
+    if (!video || isDashUnsupported) return;
 
-    if (!video) return
-
-    let cancelled = false
-
-    setLoading(true)
-    setError(null)
+    let cancelled = false;
 
     // Destroy any existing HLS instance before creating a new one
     if (hlsRef.current) {
-      hlsRef.current.destroy()
-      hlsRef.current = null
+      hlsRef.current.destroy();
+      hlsRef.current = null;
     }
 
     // Helper function for autoplay
     const playVideo = async () => {
       try {
-        await video.play()
+        await video.play();
       } catch {
         // Ignore autoplay restrictions
       }
-    }
-
-    // DASH playback is currently not supported
-    if (streamType === 'dash') {
-      setError(
-        'DASH streams are not currently supported. Please try another source.'
-      )
-      setLoading(false)
-      return
-    }
+    };
 
     // Dynamically import HLS.js to avoid SSR issues
-    import('hls.js')
+    import("hls.js")
       .then(({ default: Hls }) => {
-        if (cancelled || !videoRef.current) return
+        if (cancelled || !videoRef.current) return;
 
         // Use HLS.js when supported
         if (Hls.isSupported()) {
           const hls = new Hls({
             enableWorker: true,
             lowLatencyMode: true,
-          })
+          });
 
-          hlsRef.current = hls
+          hlsRef.current = hls;
 
-          hls.loadSource(streamUrl)
-          hls.attachMedia(video)
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
 
           hls.on(Hls.Events.MANIFEST_PARSED, async () => {
-            if (cancelled) return
+            if (cancelled) return;
 
-            setLoading(false)
-            await playVideo()
-          })
+            setLoading(false);
+            await playVideo();
+          });
 
           hls.on(Hls.Events.ERROR, (_, data) => {
-            if (!data.fatal) return
+            if (!data.fatal) return;
 
-            console.error('HLS Fatal Error:', data)
+            console.error("HLS Fatal Error:", data);
 
             setError(
-              'Unable to load the stream. The channel may currently be offline.'
-            )
+              "Unable to load the stream. The channel may currently be offline.",
+            );
 
-            setLoading(false)
+            setLoading(false);
 
-            hls.destroy()
-          })
+            hls.destroy();
+          });
 
-          return
+          return;
         }
 
         // Safari and some browsers support HLS natively
-        if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = streamUrl
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = streamUrl;
 
           const handleLoaded = async () => {
-            setLoading(false)
-            await playVideo()
-          }
+            setLoading(false);
+            await playVideo();
+          };
 
           const handleError = () => {
-            setError('Failed to load the stream.')
-            setLoading(false)
-          }
+            setError("Failed to load the stream.");
+            setLoading(false);
+          };
 
-          video.addEventListener('loadedmetadata', handleLoaded, {
+          video.addEventListener("loadedmetadata", handleLoaded, {
             once: true,
-          })
+          });
 
-          video.addEventListener('error', handleError, {
+          video.addEventListener("error", handleError, {
             once: true,
-          })
+          });
 
-          return
+          return;
         }
 
         // Browser does not support HLS playback
-        setError('Your browser does not support HLS streaming.')
-        setLoading(false)
+        setError("Your browser does not support HLS streaming.");
+        setLoading(false);
       })
       .catch((err) => {
-        console.error('HLS Import Error:', err)
+        console.error("HLS Import Error:", err);
 
         if (!cancelled) {
-          setError('Failed to initialize the video player.')
-          setLoading(false)
+          setError("Failed to initialize the video player.");
+          setLoading(false);
         }
-      })
+      });
 
     return () => {
-      cancelled = true
+      cancelled = true;
 
       if (hlsRef.current) {
-        hlsRef.current.destroy()
-        hlsRef.current = null
+        hlsRef.current.destroy();
+        hlsRef.current = null;
       }
 
-      video.pause()
-      video.removeAttribute('src')
-      video.load()
-    }
-  }, [streamUrl, streamType])
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [streamUrl, isDashUnsupported]);
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden rounded-2xl bg-black">
-      {loading && (
+    <div className="relative w-full h-full aspect-video overflow-hidden rounded-2xl bg-black">
+      {displayLoading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/90">
           <div className="mb-3 h-10 w-10 animate-spin rounded-full border-4 border-red-500 border-t-transparent" />
-          <p className="text-sm text-white/70">
-            Loading {channelName}...
-          </p>
+          <p className="text-sm text-white/70">Loading {channelName}...</p>
         </div>
       )}
 
-      {error && (
+      {displayError && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/90 p-6 text-center">
           <div className="mb-3 text-4xl">📡</div>
 
@@ -168,9 +169,7 @@ export default function VideoPlayer({
             Stream Unavailable
           </h3>
 
-          <p className="text-sm text-white/60">
-            {error}
-          </p>
+          <p className="text-sm text-white/60">{displayError}</p>
         </div>
       )}
 
@@ -181,8 +180,7 @@ export default function VideoPlayer({
         playsInline
         autoPlay
         muted={false}
-  
       />
     </div>
-  )
+  );
 }
