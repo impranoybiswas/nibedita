@@ -79,7 +79,7 @@ export const channels: Channel[] = [
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d9/Ekushey_Television_Logo.svg/1280px-Ekushey_Television_Logo.svg.png",
     group: "Bangla",
     streamUrl:
-      "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
+      "https://ekusheyserver.com/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
     streamType: "hls",
   },
   {
@@ -154,6 +154,15 @@ export const channels: Channel[] = [
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
     group: "Live",
     streamUrl: "http://198.195.239.50:8095/Tsports/tracks-v1a1/mono.m3u8",
+    streamType: "hls",
+  },
+  {
+    id: "044",
+    name: "T Sports Backup",
+    slug: "t-sports-backup",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
+    group: "Live",
+    streamUrl: "https://tvsen7.aynaott.com/tsports-hd/index.m3u8",
     streamType: "hls",
   },
   {
@@ -264,6 +273,26 @@ export const channels: Channel[] = [
     group: "Movies",
     streamUrl:
       "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
+    streamType: "hls",
+  },
+  {
+    id: "029",
+    name: "Desh TV",
+    slug: "desh-tv",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/2/25/Desh_tv_logo.jpg",
+    group: "Movies",
+    streamUrl:
+      "https://bozztv.com/rongo/rongo-DeshTV/tracks-v1a1/mono.m3u8",
+    streamType: "hls",
+  },
+  {
+    id: "030",
+    name: "PTV Sports",
+    slug: "ptv-sports",
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/PTV_Sports.png/250px-PTV_Sports.png",
+    group: "Sports",
+    streamUrl:
+      "https://tvsen5.aynaott.com/PtvSports/tracks-v1a1/mono.ts.m3u8",
     streamType: "hls",
   },
 ];

@@ -10,9 +10,13 @@ const ALLOWED_HOSTS = [
   "198.195.239.50",
   "27.124.71.27",
   "210.4.72.204",
+  "ekusheyserver.com",
   "gpcdn.net",
   "aynaott.com",
   "ncare.live",
+  "youtube-nocookie.com",
+  "bozztv.com",
+  "cors-proxy.cooks.fyi",
 ];
 
 function isAllowedHost(url: string): boolean {
@@ -73,7 +77,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Decode in case it was double-encoded
   const decodedUrl = decodeURIComponent(targetUrl);
 
   if (!isAllowedHost(decodedUrl)) {
@@ -83,13 +86,14 @@ export async function GET(req: NextRequest) {
   try {
     const upstream = await fetch(decodedUrl, {
       headers: {
-        // Some servers require a Referer / User-Agent
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         Referer: new URL(decodedUrl).origin + "/",
         Origin: new URL(decodedUrl).origin,
+        Accept: "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive",
       },
-      // Do not follow redirects automatically so we can proxy them too
       redirect: "follow",
     });
 
@@ -102,7 +106,7 @@ export async function GET(req: NextRequest) {
 
     const contentType = upstream.headers.get("content-type") ?? "";
 
-    // --- M3U8 Playlist: rewrite URLs ---
+    // M3U8 প্লেলিস্ট হ্যান্ডলিং
     if (
       decodedUrl.includes(".m3u8") ||
       contentType.includes("mpegurl") ||
@@ -116,14 +120,18 @@ export async function GET(req: NextRequest) {
       return new NextResponse(body, {
         status: 200,
         headers: {
-          "Content-Type": "application/vnd.apple.mpegurl",
+          "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
           "Access-Control-Allow-Origin": "*",
-          "Cache-Control": "no-cache",
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Range",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
       });
     }
 
-    // --- Binary segment / other content: stream through ---
+    // বাইনারি ডেটা (ভিডিও সেগমেন্ট)
     const buffer = await upstream.arrayBuffer();
 
     return new NextResponse(buffer, {
@@ -131,14 +139,29 @@ export async function GET(req: NextRequest) {
       headers: {
         "Content-Type": contentType || "video/MP2T",
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "no-cache",
+        "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD",
+        "Access-Control-Allow-Headers": "Content-Type, Range",
+        "Cache-Control": "public, max-age=3600",
+        "Content-Length": buffer.byteLength.toString(),
       },
     });
   } catch (err) {
-    console.error("[Stream Proxy] Error fetching upstream:", err);
+    console.error("[Stream Proxy] Error:", err);
     return NextResponse.json(
       { error: "Failed to fetch stream" },
       { status: 500 },
     );
   }
+}
+
+// OPTIONS method এর জন্য CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD",
+      "Access-Control-Allow-Headers": "Content-Type, Range",
+    },
+  });
 }
