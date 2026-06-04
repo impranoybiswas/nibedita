@@ -38,6 +38,11 @@ export default function VideoPlayer({
     : error;
   const displayLoading = isDashUnsupported ? false : loading;
 
+  // Route every stream through the server-side proxy so that:
+  //  1. HTTP streams are fetched server-side and served over HTTPS (mixed-content fix)
+  //  2. Servers with restrictive CORS headers are proxied transparently
+  const proxiedUrl = `/api/stream?url=${encodeURIComponent(streamUrl)}`;
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video || isDashUnsupported) return;
@@ -73,7 +78,7 @@ export default function VideoPlayer({
 
           hlsRef.current = hls;
 
-          hls.loadSource(streamUrl);
+          hls.loadSource(proxiedUrl);
           hls.attachMedia(video);
 
           hls.on(Hls.Events.MANIFEST_PARSED, async () => {
@@ -102,7 +107,7 @@ export default function VideoPlayer({
 
         // Safari and some browsers support HLS natively
         if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = streamUrl;
+          video.src = proxiedUrl;
 
           const handleLoaded = async () => {
             setLoading(false);
@@ -150,7 +155,7 @@ export default function VideoPlayer({
       video.removeAttribute("src");
       video.load();
     };
-  }, [streamUrl, isDashUnsupported]);
+  }, [proxiedUrl, isDashUnsupported]);
 
   return (
     <div className="relative w-full h-full aspect-video overflow-hidden rounded-2xl bg-black">

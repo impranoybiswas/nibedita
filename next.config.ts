@@ -1,4 +1,6 @@
 
+
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -14,7 +16,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ['*'],
+  allowedDevOrigins: ["*"],
 };
 
 export default nextConfig;
+
