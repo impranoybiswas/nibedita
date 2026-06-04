@@ -78,7 +78,8 @@ export const channels: Channel[] = [
     slug: "ekushey-tv",
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d9/Ekushey_Television_Logo.svg/1280px-Ekushey_Television_Logo.svg.png",
     group: "Bangla",
-    streamUrl: "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
+    streamUrl:
+      "https://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
     streamType: "hls",
   },
   {
@@ -134,7 +135,7 @@ export const channels: Channel[] = [
     slug: "nagorik-tv",
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJFA8BRgzgG3mZkwOsk2oY37Z6xqTTMiDQ1w&s",
     group: "Sports",
-    streamUrl: "http://198.195.239.50:8095/nagorik/tracks-v1a1/mono.m3u8",
+    streamUrl: "https://198.195.239.50:8095/nagorik/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
   {
@@ -143,16 +144,16 @@ export const channels: Channel[] = [
     slug: "t-sports",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
     group: "Sports",
-    streamUrl: "http://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8",
+    streamUrl: "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8",
     streamType: "hls",
   },
   {
     id: "016",
     name: "T Sports Backup",
     slug: "t-sports-backup",
-    logo: "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/T_Sports_logo.svg/3840px-T_Sports_logo.svg.png",
     group: "Live",
-    streamUrl: "http://198.195.239.50:8095/Tsports/tracks-v1a1/mono.m3u8",
+    streamUrl: "https://198.195.239.50:8095/Tsports/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
   {
@@ -161,7 +162,7 @@ export const channels: Channel[] = [
     slug: "gtv",
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f1/Logo_of_GTV_%28Bangladesh%29.svg/1280px-Logo_of_GTV_%28Bangladesh%29.svg.png",
     group: "Live",
-    streamUrl: "http://198.195.239.50:8095/PTV-kutta/video.m3u8",
+    streamUrl: "https://198.195.239.50:8095/PTV-kutta/video.m3u8",
     streamType: "hls",
   },
   {
@@ -170,7 +171,7 @@ export const channels: Channel[] = [
     slug: "live-sports-1",
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPCvTmUhiKDs4ehoVpFLh7xwdCNK2-N_gNFqnaOM4YRQ&s=10",
     group: "Sports",
-    streamUrl: "http://tvsen7.aynaott.com/sspts1/tracks-v1a1/mono.ts.m3u8",
+    streamUrl: "https://tvsen7.aynaott.com/sspts1/tracks-v1a1/mono.ts.m3u8",
     streamType: "hls",
   },
   {
@@ -179,7 +180,7 @@ export const channels: Channel[] = [
     slug: "live-sports-2",
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPCvTmUhiKDs4ehoVpFLh7xwdCNK2-N_gNFqnaOM4YRQ&s=10",
     group: "Sports",
-    streamUrl: "http://198.195.239.50:8095/Eurosport/index.m3u8",
+    streamUrl: "https://198.195.239.50:8095/Eurosport/index.m3u8",
     streamType: "hls",
   },
   {
@@ -188,7 +189,7 @@ export const channels: Channel[] = [
     slug: "live-sports-3",
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPCvTmUhiKDs4ehoVpFLh7xwdCNK2-N_gNFqnaOM4YRQ&s=10",
     group: "Sports",
-    streamUrl: "http://27.124.71.27/Willow_Extra/index.m3u8",
+    streamUrl: "https://27.124.71.27/Willow_Extra/index.m3u8",
     streamType: "hls",
   },
   {
@@ -197,7 +198,7 @@ export const channels: Channel[] = [
     slug: "channel-9",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/Channel%209.png",
     group: "Bangla",
-    streamUrl: "http://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8",
+    streamUrl: "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8",
     streamType: "hls",
   },
   {
@@ -243,7 +244,7 @@ export const channels: Channel[] = [
     slug: "sony-aath",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/56e54462053b1b278b80b532c89c01f17e360fd5/Sony%20Aath.jpeg",
     group: "Bangla",
-    streamUrl: "http://198.195.239.50:8095/SonyAath/tracks-v1a1/mono.m3u8",
+    streamUrl: "https://198.195.239.50:8095/SonyAath/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
   {
@@ -252,7 +253,7 @@ export const channels: Channel[] = [
     slug: "jalsha-movies",
     logo: "https://e7.pngegg.com/pngimages/535/809/png-clipart-jalsha-movies-star-jalsha-television-show-star-india-sitarhd-purple-television.png",
     group: "Movies",
-    streamUrl: "http://198.195.239.50:8095/JalshaMovies/tracks-v1a1/mono.m3u8",
+    streamUrl: "https://198.195.239.50:8095/JalshaMovies/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
   {
@@ -262,8 +263,7 @@ export const channels: Channel[] = [
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/Colors%20Bangla%20Cinema.png",
     group: "Movies",
     streamUrl:
-      "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
+      "https://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
     streamType: "hls",
   },
-
 ];
