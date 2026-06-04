@@ -303,4 +303,14 @@ export const channels: Channel[] = [
       "https://app.ncare.live/live-orgin/atnbanglauk-off.stream/playlist.m3u8",
     streamType: "hls",
   },
+  {
+    id: "032",
+    name: "Test",
+    slug: "test",
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/PTV_Sports.png/250px-PTV_Sports.png",
+    group: "test",
+    streamUrl:
+      "https://tvsen6.aynaott.com/channel9/index.m3u8?e=1779283756&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=6d1662351f39dd5277df069a01f46fee",
+    streamType: "hls",
+  }
 ];
