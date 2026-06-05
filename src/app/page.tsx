@@ -17,16 +17,21 @@ export default function HomePage() {
   }, [search]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-950 via-black to-zinc-900 text-white">
-      <section className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/10">
+    <main className="min-h-dvh bg-black/10 text-white border-x border-white/10">
+      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/20 border-b border-white/10">
         {/* Navbar */}
-        <nav className="h-10 text-white flex items-end justify-center font-bold text-xl">
-          <span className="text-blue-500">Nibedita</span>TV
+        <nav className="h-10 md:h-16 text-white flex items-end justify-center bg-gradient-to-b from-black/50 to-transparent">
+          <Image
+            src="/image/title.svg"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="h-9 md:h-10 w-full"
+          />
         </nav>
 
         {/* Player */}
-
-        <div className="max-w-7xl mx-auto p-3">
+        <div className="w-full mx-auto p-3">
           <div className="overflow-hidden rounded-2xl border border-white/10">
             <VideoPlayer
               streamUrl={currentChannel.streamUrl}
@@ -35,22 +40,25 @@ export default function HomePage() {
             />
           </div>
 
-          <div className="flex items-center gap-3 mt-3">
-            <div className="relative h-12 w-12 bg-white rounded-lg overflow-hidden">
-              <Image
-                src={currentChannel.logo}
-                alt={currentChannel.name}
-                fill
-                className="object-contain p-1"
-              />
+          <div className="flex items-center justify-between gap-3 mt-3">
+            <div className="flex items-center gap-2 border border-white/10 p-2 rounded-2xl">
+              <div className="relative size-8 md:size-10 bg-white rounded-full overflow-hidden flex items-center gap-2">
+                <Image
+                  src={currentChannel.logo}
+                  alt={currentChannel.name}
+                  fill
+                  className="object-contain p-1"
+                />
+              </div>
+              <h2 className="font-bold text-sm md:text-lg pr-4">
+                {currentChannel.name}
+              </h2>
             </div>
 
             <div>
-              <h2 className="font-bold text-lg">{currentChannel.name}</h2>
-
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-sm text-red-400">LIVE</span>
+                <span className="text-sm text-red-400 pr-1">LIVE</span>
               </div>
             </div>
           </div>
@@ -58,7 +66,7 @@ export default function HomePage() {
       </section>
 
       {/* Content */}
-      <section className="max-w-7xl mx-auto px-4 py-6">
+      <section className="w-full mx-auto px-4 py-6">
         {/* Search */}
         <div className="mb-6">
           <input
@@ -71,7 +79,7 @@ export default function HomePage() {
         </div>
 
         {/* Channels */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {filteredChannels.map((channel) => {
             const active = currentChannel.id === channel.id;
 
@@ -79,10 +87,10 @@ export default function HomePage() {
               <button
                 key={channel.id}
                 onClick={() => setCurrentChannel(channel)}
-                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 p-4 text-left ${
+                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 p-2 text-left ${
                   active
-                    ? "bg-blue-600 border-blue-500 shadow-lg shadow-blue-600/30 scale-[1.02]"
-                    : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-blue-500/40"
+                    ? "bg-purple-800/60 border-purple-800/60 shadow-lg shadow-purple-800/20 scale-[1.02]"
+                    : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-purple-800/60"
                 }
                 `}
               >

@@ -15,6 +15,7 @@ const ALLOWED_HOSTS = [
   "youtube-nocookie.com",
   "bozztv.com",
   "app.ncare.live",
+  "cdn-4.pishow.tv"
 ];
 
 /* ----------------------------

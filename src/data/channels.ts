@@ -171,7 +171,7 @@ export const channels: Channel[] = [
   {
     id: "027",
     name: "Jalsha Movies",
-    logo: "https://e7.pngegg.com/pngimages/535/809/png-clipart-jalsha-movies-star-jalsha-television-show-star-india-sitarhd-purple-television.png",
+    logo: "https://static.wikia.nocookie.net/etv-gspn-bangla/images/6/69/Jalsha_Movies_HD_alt.png",
     streamUrl: "http://198.195.239.50:8095/JalshaMovies/tracks-v1a1/mono.m3u8",
   },
   {
