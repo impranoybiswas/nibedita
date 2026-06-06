@@ -30,10 +30,10 @@ export default function HomePage() {
   }, [search, selectedCategory]);
 
   return (
-    <main className="min-h-dvh max-w-3xl mx-auto bg-stone-950 text-white border-x border-white/5 shadow-2xl">
+    <main className="min-h-dvh max-w-3xl mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl">
       
       {/* Sticky Header & Player Section */}
-      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/40 border-b border-white/10">
+      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10">
         
         {/* Logo Header */}
         <header className="h-14 text-white flex items-center justify-center border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
@@ -59,20 +59,20 @@ export default function HomePage() {
 
           {/* Current Channel Meta Info */}
           <div className="flex items-center justify-between gap-3 mt-4 px-1">
-            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-md">
-              <div className="relative size-10 md:size-12 bg-white rounded-xl overflow-hidden flex items-center justify-center shadow-inner">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-md ">
+              <div className="relative size-6 md:size-8 bg-white rounded-full overflow-hidden flex items-center justify-center shadow-inner">
                 <Image
                   src={currentChannel.logo}
                   alt={currentChannel.name}
                   fill
-                  className="object-contain p-1.5"
+                  className="object-contain p-1"
                 />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">
+                <p className="text-[6pt] font-bold text-purple-400 uppercase tracking-widest">
                   {currentChannel.category}
                 </p>
-                <h2 className="font-extrabold text-sm md:text-base pr-4 text-white/90 truncate max-w-[180px] md:max-w-xs">
+                <h2 className="font-extrabold text-xs md:text-base pr-4 text-white/90 truncate max-w-[180px] md:max-w-xs">
                   {currentChannel.name}
                 </h2>
               </div>
