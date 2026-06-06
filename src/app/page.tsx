@@ -17,10 +17,10 @@ export default function HomePage() {
   }, [search]);
 
   return (
-    <main className="min-h-dvh bg-black/10 text-white border-x border-white/10">
-      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/20 border-b border-white/10">
-        {/* Navbar */}
-        <nav className="h-10 md:h-16 text-white flex items-end justify-center bg-gradient-to-b from-black/50 to-transparent">
+    <main className="min-h-dvh max-w-3xl mx-auto bg-black/20 text-white border-x border-white/10">
+      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10">
+        {/* Header */}
+        <header className="h-10 md:h-16 text-white flex items-end justify-center bg-gradient-to-b from-black/50 to-transparent">
           <Image
             src="/image/title.svg"
             alt="Logo"
@@ -28,7 +28,7 @@ export default function HomePage() {
             height={100}
             className="h-9 md:h-10 w-full"
           />
-        </nav>
+        </header>
 
         {/* Player */}
         <div className="w-full mx-auto p-3">

@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nibedita Live — Bangladesh Live TV Channels",
+  title: "Nibedita Live TV — Bangladesh Live TV Channels",
   description:
-    "Watch Bangladesh and international TV channels live online for free.",
+    "Watch Bangladesh and international TV channels live online for free. Stream your favorite shows, movies, and sports events in high quality.",
+  keywords: [
+    "Live TV",
+    "Bangladesh TV",
+    "International TV",
+    "Free TV",
+    "Sports",
+    "Movies",
+    "Shows",
+  ],
 };
 
 export default function RootLayout({
@@ -14,11 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-linear-to-b from-zinc-950 via-black to-zinc-900 min-h-screen font-sans">
-        <main className="max-w-3xl mx-auto">
-          {children}
-        </main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

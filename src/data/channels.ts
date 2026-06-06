@@ -201,7 +201,7 @@ export const channels: Channel[] = [
   {
     id: "032",
     name: "Willow",
-    logo: "https://s3.aynaott.com/storage/94a778ec3219f7eb54bdf1ee07a95788",
+    logo: "https://photos.prnewswire.com/prnfull/20160229/338826LOGO",
     streamUrl: "https://tvsen5.aynaott.com/willowhd/index.m3u8",
   },
 
@@ -217,13 +217,13 @@ export const channels: Channel[] = [
     id: "034",
     name: "Asian TV",
     streamUrl: "https://tvsen6.aynaott.com/asiantv/index.m3u8",
-    logo: "https://s3.aynaott.com/storage/5282cec3a2e9349b750540d658cf1b6c",
+    logo: "https://yt3.googleusercontent.com/h7Q4IqpBLVNfIoU6c11UQfGK0V_3uPFYt8BvvFhReTwwjdiBzJ0A9oUeFnrPG6fyWlY24R8DeNo=s900-c-k-c0x00ffffff-no-rj",
   },
   {
     id: "035",
     name: "SA TV",
     streamUrl: "https://tvsen6.aynaott.com/satv/index.m3u8",
-    logo: "https://s3.aynaott.com/storage/f710d2ff532cb7e7b75566232c5b72d3",
+    logo: "https://www.satv.tv/wp-content/uploads/2021/08/satv-logo-1.jpg",
   },
   {
     id: "036",

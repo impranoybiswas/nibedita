@@ -38,7 +38,6 @@ export default function VideoPlayer({
   const [error, setError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -52,19 +51,8 @@ export default function VideoPlayer({
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
     controlsTimeout.current = setTimeout(() => {
       if (isPlaying) setShowControls(false);
-    }, 5000);
+    }, 1000);
   };
-
-  // Sync Volume from localStorage
-  useEffect(() => {
-    const savedVolume = localStorage.getItem("player-volume");
-    if (savedVolume && videoRef.current) {
-      const vol = Number(savedVolume);
-      videoRef.current.volume = vol;
-      setVolume(vol);
-      setIsMuted(vol === 0);
-    }
-  }, []);
 
   // HLS and Video Logic
   useEffect(() => {
@@ -158,21 +146,6 @@ export default function VideoPlayer({
     const nextMuted = !isMuted;
     videoRef.current.muted = nextMuted;
     setIsMuted(nextMuted);
-    if (nextMuted) setVolume(0);
-    else {
-      const lastVol = Number(localStorage.getItem("player-volume")) || 1;
-      setVolume(lastVol);
-      videoRef.current.volume = lastVol;
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value);
-    if (!videoRef.current) return;
-    videoRef.current.volume = val;
-    setVolume(val);
-    setIsMuted(val === 0);
-    localStorage.setItem("player-volume", val.toString());
   };
 
   const toggleFullscreen = () => {
@@ -238,61 +211,48 @@ export default function VideoPlayer({
 
         {/* Controls Overlay */}
         <div
-          className={`absolute inset-0 z-20 transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
+          className={`absolute z-20 bottom-5 left-1/2 -translate-x-1/2  transition-all w-2/3 border border-white/20 duration-300 rounded-full bg-black/5 ${showControls ? "opacity-100" : "opacity-0"} backdrop-blur-sm`}
         >
-          <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 bg-gradient-to-t from-black via-black/80 to-transparent p-5 ">
+          <div className="flex items-center gap-2 to-transparent p-2">
             <button
               onClick={togglePlay}
-              className="text-white hover:scale-110 transition"
+              className="text-white hover:scale-110 transition rounded-full size-10 flex items-center justify-center bg-black/30"
             >
               {isPlaying ? (
-                <Pause fill="white" size={24} />
+                <Pause fill="white" size={20} />
               ) : (
-                <Play fill="white" size={24} />
+                <Play fill="white" size={20} />
               )}
             </button>
 
             <button
               onClick={toggleMute}
-              className="text-white hover:scale-110 transition"
+              className="text-white hover:scale-110 transition rounded-full size-10 flex items-center justify-center bg-black/30"
             >
-              {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
 
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w- cursor-pointer accent-red-500"
-            />
-
-            <div className="ml-auto flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-3">
               {typeof document !== "undefined" &&
                 "pictureInPictureEnabled" in document && (
                   <button
                     onClick={togglePiP}
-                    className="text-white hover:scale-110 transition"
+                    className="text-white hover:scale-110 transition rounded-full size-10 flex items-center justify-center bg-black/30"
                   >
-                    <PictureInPicture size={24} />
+                    <PictureInPicture size={20} />
                   </button>
                 )}
 
               <button
                 onClick={toggleFullscreen}
-                className="text-white hover:scale-110 transition"
+                className="text-white hover:scale-110 transition rounded-full size-10 flex items-center justify-center bg-black/30"
               >
-                {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
+                {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
               </button>
             </div>
           </div>
         </div>
       </div>
-
-
-      
     </>
   );
 }
