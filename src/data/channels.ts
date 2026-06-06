@@ -1,5 +1,3 @@
-// channels.ts — Cleaned & Improved Version
-
 // --- TypeScript Types ---
 export type ChannelCategory = "bdtv" | "news" | "sports" | "entertainment";
 
@@ -147,7 +145,7 @@ export const channels: Channel[] = [
   {
     id: "037",
     name: "Ekhon TV",
-    logo: "https://s3.aynaott.com/storage/274c30c492e8795c8011d0129113f4bc",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKyWxTM9UnEzKhY_fV51zRmG49ienYPjYnpQ&s",
     streamUrl: "https://tvsen6.aynaott.com/ekhontv/index.m3u8",
     category: "bdtv",
   },

@@ -6,7 +6,12 @@ import Image from "next/image";
 import VideoPlayer from "@/components/VideoPlayer";
 import { channels, getCategories } from "@/data/channels";
 import Link from "next/link";
-import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
+import {
+  ChevronDown,
+  FilterIcon,
+  Search,
+  X,
+} from "lucide-react";
 
 export default function HomePage() {
   // --- Refs ---
@@ -16,7 +21,6 @@ export default function HomePage() {
   const [currentChannel, setCurrentChannel] = useState(channels[0]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-
 
   // --- Filter Logic ---
   const filteredChannels = useMemo(() => {
@@ -70,7 +74,7 @@ export default function HomePage() {
         </header>
 
         {/* Video Player Container */}
-        <div className="w-full p-4">
+        <div className="w-full p-4 shadow-2xl">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
             <VideoPlayer
               streamUrl={currentChannel.streamUrl}
@@ -144,10 +148,12 @@ export default function HomePage() {
 
           {/* Category Dropdown Filter */}
           {/* FIX: value matches channel.category directly; options derived dynamically */}
-          <div className="relative min-w-[160px]">
-            <span className="absolute left-3 top-3.5 text-white/40 pointer-events-none">
-              <SlidersHorizontal size={15} />
-            </span>
+          <div className="relative min-w-[160px] uppercase">
+            <FilterIcon
+              className="absolute z-10 left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
+              size={16}
+            />
+
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -162,7 +168,7 @@ export default function HomePage() {
                 <option
                   key={cat}
                   value={cat}
-                  className="bg-stone-900 text-white capitalize"
+                  className="bg-stone-900 text-white"
                 >
                   {/* Capitalize first letter for display */}
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
