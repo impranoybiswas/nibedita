@@ -12,6 +12,7 @@ import {
   RotateCcw,
   RotateCw,
 } from "lucide-react";
+import ControlBtn from "./ControlBtn";
 
 interface VideoPlayerProps {
   streamUrl: string;
@@ -70,7 +71,7 @@ export default function VideoPlayer({
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
-    }, 3000);
+    }, 1000);
   }, []);
 
   const revealControls = useCallback(() => {
@@ -323,8 +324,8 @@ export default function VideoPlayer({
         </div>
 
         {/* Bottom bar */}
-        <div className="bg-gradient-to-t from-black/80 to-transparent px-4 pb-4 pt-10">
-          {/* Seekbar — only for VOD */}
+        <div className="w-full px-4 pb-4 bg-linear-to-t from-black/70 to-transparent h-fit">
+          {/* Seek bar — only for VOD */}
           {!isLive && (
             <div className="relative mb-3 flex items-center">
               {/* Buffered track */}
@@ -336,7 +337,7 @@ export default function VideoPlayer({
               </div>
               {/* Progress track */}
               <div
-                className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-red-500 pointer-events-none"
+                className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-purple-500 pointer-events-none"
                 style={{ width: `${seekPercent}%` }}
               />
               <input
@@ -351,13 +352,13 @@ export default function VideoPlayer({
                 onTouchStart={handleSeekStart}
                 onMouseUp={handleSeekEnd}
                 onTouchEnd={handleSeekEnd}
-                className="relative w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:bg-transparent"
+                className="relative w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:h-0.5 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:-translate-y-1.5"
               />
             </div>
           )}
 
           {/* Button row */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-evenly gap-1.5 md:gap-2">
             {/* Play/Pause */}
             <ControlBtn
               onClick={togglePlay}
@@ -394,31 +395,30 @@ export default function VideoPlayer({
 
             {/* Time display — VOD only */}
             {!isLive && (
-              <span className="ml-1 text-xs tabular-nums text-white/70">
+              <span className="ml-1 text-[8pt] md:text-sm tabular-nums text-white/70 hidden">
                 {formatTime(currentTime)}
                 <span className="mx-1 text-white/30">/</span>
                 {formatTime(duration)}
               </span>
             )}
 
+            <div className="bg-transparent w-full h-10" />
+
+            {typeof document !== "undefined" &&
+              "pictureInPictureEnabled" in document && (
+                <ControlBtn onClick={togglePiP} aria-label="Picture in Picture">
+                  <PictureInPicture size={16} />
+                </ControlBtn>
+              )}
+            <ControlBtn
+              onClick={toggleFullscreen}
+              aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+            </ControlBtn>
+
             {/* Right side */}
-            <div className="ml-auto flex items-center gap-2">
-              {typeof document !== "undefined" &&
-                "pictureInPictureEnabled" in document && (
-                  <ControlBtn
-                    onClick={togglePiP}
-                    aria-label="Picture in Picture"
-                  >
-                    <PictureInPicture size={16} />
-                  </ControlBtn>
-                )}
-              <ControlBtn
-                onClick={toggleFullscreen}
-                aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-              >
-                {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-              </ControlBtn>
-            </div>
+            <div className="ml-auto flex items-center gap-2"></div>
           </div>
         </div>
       </div>
@@ -439,24 +439,5 @@ export default function VideoPlayer({
         .animate-ping-once { animation: ping-once 0.5s ease-out forwards; }
       `}</style>
     </div>
-  );
-}
-
-function ControlBtn({
-  onClick,
-  children,
-  ...rest
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick?.(e);
-      }}
-      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:scale-110 hover:bg-black/50"
-      {...rest}
-    >
-      {children}
-    </button>
   );
 }
