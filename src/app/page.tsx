@@ -1,50 +1,72 @@
+// page.tsx — Fixed Version
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import VideoPlayer from "@/components/VideoPlayer";
-import { channels } from "@/data/channels";
+import { channels, getCategories } from "@/data/channels";
 import Link from "next/link";
-import { FilterIcon, Search } from "lucide-react";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 
 export default function HomePage() {
+  // --- Refs ---
+  const playerRef = useRef<HTMLElement>(null);
+
   // --- States ---
   const [currentChannel, setCurrentChannel] = useState(channels[0]);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Channels");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
 
   // --- Filter Logic ---
-  // সার্চ ইনপুট এবং সিলেক্টেড ক্যাটাগরি দুইটোর উপর ভিত্তি করে চ্যানেল ফিল্টার হবে
   const filteredChannels = useMemo(() => {
     return channels.filter((channel) => {
       const matchesSearch = channel.name
         .toLowerCase()
         .includes(search.toLowerCase());
-      
+
       const matchesCategory =
-        selectedCategory === "All Channels" ||
+        selectedCategory === "all" ||
         channel.category.toLowerCase() === selectedCategory.toLowerCase();
 
       return matchesSearch && matchesCategory;
     });
   }, [search, selectedCategory]);
 
+  // --- Channel Select Handler: scroll to player on mobile ---
+  const handleSelectChannel = (channel: (typeof channels)[0]) => {
+    setCurrentChannel(channel);
+    // Smooth scroll to player on mobile
+    playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // --- Clear all filters ---
+  const clearFilters = () => {
+    setSearch("");
+    setSelectedCategory("all");
+  };
+
+  const hasActiveFilters = search !== "" || selectedCategory !== "all";
+
   return (
     <main className="min-h-dvh max-w-3xl mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl">
-      
       {/* Sticky Header & Player Section */}
-      <section className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10">
-        
+      <section
+        ref={playerRef}
+        className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10"
+      >
         {/* Logo Header */}
         <header className="h-14 text-white flex items-center justify-center border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
-          <Image
-            src="/image/title.svg"
-            alt="NibeditaTV Logo"
-            width={140}
-            height={40}
-            className="h-7 md:h-8 w-auto object-contain"
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/image/title.svg"
+              alt="NibeditaTV Logo"
+              width={140}
+              height={40}
+              className="h-7 md:h-8 w-auto object-contain"
+              priority
+            />
+          </Link>
         </header>
 
         {/* Video Player Container */}
@@ -59,16 +81,18 @@ export default function HomePage() {
 
           {/* Current Channel Meta Info */}
           <div className="flex items-center justify-between gap-3 mt-4 px-1">
-            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-md ">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-md">
               <div className="relative size-6 md:size-8 bg-white rounded-full overflow-hidden flex items-center justify-center shadow-inner">
                 <Image
                   src={currentChannel.logo}
                   alt={currentChannel.name}
                   fill
                   className="object-contain p-1"
+                  priority // FIX: active channel logo always priority
                 />
               </div>
               <div>
+                {/* FIX: capitalize category label for display */}
                 <p className="text-[6pt] font-bold text-purple-400 uppercase tracking-widest">
                   {currentChannel.category}
                 </p>
@@ -81,7 +105,9 @@ export default function HomePage() {
             {/* Live Indicator */}
             <div className="flex items-center gap-2 bg-red-950/30 border border-red-500/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-xs font-black text-red-400 tracking-wider">LIVE</span>
+              <span className="text-xs font-black text-red-400 tracking-wider">
+                LIVE
+              </span>
             </div>
           </div>
         </div>
@@ -89,10 +115,8 @@ export default function HomePage() {
 
       {/* Main Content Area */}
       <section className="w-full px-4 py-6">
-        
         {/* Controls: Search & Category Dropdown */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          
           {/* Search Box */}
           <div className="relative flex-1">
             <input
@@ -100,25 +124,56 @@ export default function HomePage() {
               placeholder="Search live channels..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pl-11 text-sm outline-none backdrop-blur-md transition focus:border-purple-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pl-11 pr-10 text-sm outline-none backdrop-blur-md transition focus:border-purple-500 focus:bg-white/10"
             />
-            <Search size={16} className="absolute left-4 top-3.5 text-white/40 text-sm pointer-events-none" />
+            <Search
+              size={16}
+              className="absolute left-4 top-3.5 text-white/40 pointer-events-none"
+            />
+            {/* FIX: clear search button */}
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-3 text-white/30 hover:text-white/70 transition"
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
 
           {/* Category Dropdown Filter */}
+          {/* FIX: value matches channel.category directly; options derived dynamically */}
           <div className="relative min-w-[160px]">
+            <span className="absolute left-3 top-3.5 text-white/40 pointer-events-none">
+              <SlidersHorizontal size={15} />
+            </span>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-10 text-sm font-medium text-white/80 outline-none backdrop-blur-md cursor-pointer transition focus:border-purple-500 focus:bg-white/10"
+              className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 pl-10 pr-10 text-sm font-medium text-white/80 outline-none backdrop-blur-md cursor-pointer transition focus:border-purple-500 focus:bg-white/10 uppercase"
             >
-              <option value="All Channels" className="bg-stone-900 text-white">All Channels</option>
-              <option value="Bangla" className="bg-stone-900 text-white">Bangla</option>
-              <option value="Sports" className="bg-stone-900 text-white">Sports</option>
-              <option value="Entertainment" className="bg-stone-900 text-white">Entertainment</option>
+              {/* "All" option */}
+              <option value="all" className="bg-stone-900 text-white">
+                All Channels
+              </option>
+              {/* FIX: dynamically generated from channels data */}
+              {getCategories().map((cat) => (
+                <option
+                  key={cat}
+                  value={cat}
+                  className="bg-stone-900 text-white capitalize"
+                >
+                  {/* Capitalize first letter for display */}
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
             </select>
-            {/* Custom Arrow Icon */}
-            <FilterIcon size={16} className="absolute right-4 top-3.5 text-white/40 text-sm pointer-events-none" />
+            {/* FIX: ChevronDown as dropdown arrow (semantically correct) */}
+            <ChevronDown
+              size={15}
+              className="absolute right-3 top-3.5 text-white/40 pointer-events-none"
+            />
           </div>
         </div>
 
@@ -131,22 +186,22 @@ export default function HomePage() {
               return (
                 <button
                   key={channel.id}
-                  onClick={() => setCurrentChannel(channel)}
+                  onClick={() => handleSelectChannel(channel)}
                   className={`group relative flex flex-col items-center overflow-hidden rounded-2xl border p-3 text-center transition-all duration-300 ${
                     active
                       ? "bg-gradient-to-b from-purple-600/40 to-purple-900/60 border-purple-500 shadow-lg shadow-purple-500/10 scale-[1.03]"
                       : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20 hover:scale-[1.01]"
                   }`}
                 >
-                  {/* Channel Active Status Mark */}
+                  {/* Active Status Dot */}
                   {active && (
                     <span className="absolute top-2 right-2 flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
                     </span>
                   )}
 
-                  {/* Channel Logo Frame */}
+                  {/* Channel Logo */}
                   <div className="bg-white rounded-xl p-2.5 h-16 w-16 md:h-20 md:w-20 flex items-center justify-center mb-3 shadow-md group-hover:scale-105 transition-transform duration-300">
                     <Image
                       src={channel.logo}
@@ -154,11 +209,19 @@ export default function HomePage() {
                       width={64}
                       height={64}
                       className="object-contain"
+                      // FIX: priority on currently active channel for LCP
+                      priority={channel.id === currentChannel.id}
                     />
                   </div>
 
-                  {/* Channel Title Text */}
-                  <h3 className={`font-medium text-xs md:text-sm line-clamp-1 px-1 transition-colors ${active ? "text-purple-200 font-bold" : "text-white/70 group-hover:text-white"}`}>
+                  {/* Channel Name */}
+                  <h3
+                    className={`font-medium text-xs md:text-sm line-clamp-1 px-1 transition-colors ${
+                      active
+                        ? "text-purple-200 font-bold"
+                        : "text-white/70 group-hover:text-white"
+                    }`}
+                  >
                     {channel.name}
                   </h3>
                 </button>
@@ -166,15 +229,30 @@ export default function HomePage() {
             })}
           </div>
         ) : (
-          /* Empty / Not Found State */
+          /* FIX: Empty state with clear filters button */
           <div className="py-16 text-center border border-dashed border-white/10 rounded-2xl bg-white/5">
-            <p className="text-xl">📺</p>
-            <p className="text-sm text-white/40 mt-2">No channels found in this category.</p>
+            <p className="text-2xl mb-2">📺</p>
+            <p className="text-sm text-white/50 mb-1">
+              No channels found for{" "}
+              {search ? `"${search}"` : `"${selectedCategory}"`}
+            </p>
+            <p className="text-xs text-white/30 mb-5">
+              Try a different search or category
+            </p>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-2 text-xs font-semibold text-purple-400 border border-purple-500/30 bg-purple-900/20 hover:bg-purple-900/40 px-4 py-2 rounded-full transition"
+              >
+                <X size={13} />
+                Clear filters
+              </button>
+            )}
           </div>
         )}
       </section>
 
-      {/* Modern Compact Footer */}
+      {/* Footer */}
       <footer className="mt-16 border-t border-white/5 py-6 text-center text-xs text-white/30 tracking-wide">
         Created by{" "}
         <Link
