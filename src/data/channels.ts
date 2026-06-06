@@ -378,6 +378,13 @@ export const channels: Channel[] = [
       "https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8",
     category: "entertainment",
   },
+  {
+    id: "049",
+    name: "Sony Movies",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKRmw0TG8nelaOLgOphjuIlocQ9lj2rDOb1g&s",
+    streamUrl: "https://a-cdn.klowdtv.com/live1/smc_720p/chunks.m3u8",
+    category: "entertainment",
+  }
 ];
 
 // --- Utility helpers ---
