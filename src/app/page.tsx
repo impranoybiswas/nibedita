@@ -6,19 +6,23 @@ import Image from "next/image";
 import VideoPlayer from "@/components/VideoPlayer";
 import { channels, getCategories } from "@/data/channels";
 import Link from "next/link";
-import {
-  ChevronDown,
-  FilterIcon,
-  Search,
-  X,
-} from "lucide-react";
+import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
 
 export default function HomePage() {
   // --- Refs ---
   const playerRef = useRef<HTMLElement>(null);
 
   // --- States ---
-  const [currentChannel, setCurrentChannel] = useState(channels[0]);
+  const [currentChannel, setCurrentChannel] = useState(() => {
+    // if the user has a saved channel in localStorage, use that; otherwise default to the first channel
+    if (typeof window !== "undefined") {
+      const savedChannel = localStorage.getItem("current-channel");
+      if (savedChannel) {
+        return channels.find((c) => c.id === savedChannel) || channels[0];
+      }
+    }
+    return channels[0]; // fallback to first channel or null if channels is empty
+  });
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -40,6 +44,7 @@ export default function HomePage() {
   // --- Channel Select Handler: scroll to player on mobile ---
   const handleSelectChannel = (channel: (typeof channels)[0]) => {
     setCurrentChannel(channel);
+    localStorage.setItem("current-channel", channel.id); // persist selected channel
     // Smooth scroll to player on mobile
     playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
