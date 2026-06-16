@@ -58,7 +58,7 @@ export default function HomePage() {
   const hasActiveFilters = search !== "" || selectedCategory !== "all";
 
   return (
-    <main className="min-h-dvh max-w-3xl mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl">
+    <main className="min-h-dvh max-w-md mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl">
       {/* Sticky Header & Player Section */}
       <section
         ref={playerRef}
@@ -91,7 +91,7 @@ export default function HomePage() {
           {/* Current Channel Meta Info */}
           <div className="flex items-center justify-between gap-3 mt-4 px-1">
             <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-md">
-              <div className="relative size-6 md:size-8 bg-white rounded-full overflow-hidden flex items-center justify-center shadow-inner">
+              <div className="relative size-6 bg-white rounded-full overflow-hidden flex items-center justify-center shadow-inner">
                 <Image
                   src={currentChannel.logo}
                   alt={currentChannel.name}
@@ -105,7 +105,7 @@ export default function HomePage() {
                 <p className="text-[6pt] font-bold text-purple-400 uppercase tracking-widest">
                   {currentChannel.category}
                 </p>
-                <h2 className="font-extrabold text-xs md:text-base pr-4 text-white/90 truncate max-w-[180px] md:max-w-xs">
+                <h2 className="font-extrabold text-xs pr-4 text-white/90 truncate max-w-[180px] md:max-w-xs">
                   {currentChannel.name}
                 </h2>
               </div>
@@ -190,7 +190,7 @@ export default function HomePage() {
 
         {/* Channels Grid View */}
         {filteredChannels.length > 0 ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {filteredChannels.map((channel) => {
               const active = currentChannel.id === channel.id;
 
