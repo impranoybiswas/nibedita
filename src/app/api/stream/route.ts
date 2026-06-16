@@ -4,6 +4,7 @@ const ALLOWED_HOSTS = [
   "owrcovcrpy.gpcdn.net",
   "byphdgllyk.gpcdn.net",
   "tvsen7.aynaott.com",
+  "tvsen6.aynaott.com",
   "tvsen5.aynaott.com",
   "198.195.239.50",
   "27.124.71.27",
@@ -17,7 +18,12 @@ const ALLOWED_HOSTS = [
   "app.ncare.live",
   "cdn-4.pishow.tv",
   "a-cdn.klowdtv.com",
-  "edge2.roarzone.net"
+  "edge2.roarzone.net",
+  "amagi.tv",
+  "226503.xyz",
+  "pishow.tv",
+  "vods2.aynaott.com",
+  "bozztv.com",
 ];
 
 /* ----------------------------
@@ -26,7 +32,7 @@ const ALLOWED_HOSTS = [
 function isAllowedHost(url: string): boolean {
   try {
     const hostname = new URL(url).hostname;
-
+    // Check for exact match or subdomain match
     return ALLOWED_HOSTS.some(
       (h) => hostname === h || hostname.endsWith(`.${h}`),
     );
@@ -88,17 +94,20 @@ export async function GET(req: NextRequest) {
   const decodedUrl = decodeURIComponent(url);
 
   if (!isAllowedHost(decodedUrl)) {
+    console.warn("[Stream Proxy] Blocked host:", new URL(decodedUrl).hostname);
     return NextResponse.json({ error: "Host not allowed" }, { status: 403 });
   }
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+    // Vercel Hobby timeout is 10s, Pro is 60s. 12s is a safe middle ground for the fetch itself.
+    const timeoutId = setTimeout(() => controller.abort(), 12_000);
 
     const upstream = await fetch(decodedUrl, {
       signal: controller.signal,
       headers: {
-        "User-Agent": "Mozilla/5.0",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         Referer: new URL(decodedUrl).origin + "/",
         Origin: new URL(decodedUrl).origin,
         Accept: "*/*",
@@ -137,21 +146,21 @@ export async function GET(req: NextRequest) {
         headers: {
           "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
           "Access-Control-Allow-Origin": "*",
-          "Cache-Control": "no-cache",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
         },
       });
     }
 
     /* ----------------------------
-       BINARY STREAM (TS, MP4)
+       BINARY STREAM (TS, MP4) - Use direct body streaming
     -----------------------------*/
-    const buffer = await upstream.arrayBuffer();
-
-    return new NextResponse(buffer, {
+    // We pass the upstream body directly to NextResponse to enable true streaming
+    // and avoid Vercel's payload size limits for serverless functions.
+    return new NextResponse(upstream.body, {
       headers: {
         "Content-Type": contentType || "video/MP2T",
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, max-age=3600",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
       },
     });
   } catch (err) {
