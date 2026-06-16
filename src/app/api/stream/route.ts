@@ -174,7 +174,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         error: "Stream fetch failed",
-        details: err instanceof Error ? err.message : String(err),
+        message: err instanceof Error ? err.message : String(err),
+        cause: err instanceof Error && "cause" in err ? err.cause : "unknown",
       },
       { status: 500 },
     );
