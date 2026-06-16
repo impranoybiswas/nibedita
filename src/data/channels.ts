@@ -268,6 +268,38 @@ export const channels: Channel[] = [
     category: "sports",
   },
   {
+    id: "050",
+    name: "FIFA 1",
+    logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
+    streamUrl:
+      "https://a62dad94.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/39081f3a-49dd-4b90-b4e6-5b6d4c953fd0/2.m3u8",
+    category: "sports",
+  },
+  {
+    id: "051",
+    name: "FIFA 2",
+    logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
+    streamUrl:
+      "https://37b4c228.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWZyX0ZJRkFQbHVzRnJlbmNoX0hMUw/6f5437c5-e015-4754-8476-c8c6d27d3a55/1.m3u8",
+    category: "sports",
+  },
+  {
+    id: "052",
+    name: "FIFA 3",
+    logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
+    streamUrl:
+      "https://4397879b.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/3312c83f-2ec4-4d31-a14c-6e21faae560d/2.m3u8",
+    category: "sports",
+  },
+  {
+    id: "053",
+    name: "FIFA 4",
+    logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
+    streamUrl:
+      "https://d2w9q46ikgrcwx.cloudfront.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-of5cbk3sav3w5/845316b3-e102-41c5-809d-68199472c0d5/3.m3u8",
+    category: "sports",
+  },
+  {
     id: "020",
     name: "Live Sports 3",
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPCvTmUhiKDs4ehoVpFLh7xwdCNK2-N_gNFqnaOM4YRQ&s=10",
@@ -323,7 +355,8 @@ export const channels: Channel[] = [
     id: "026",
     name: "Sony Aath",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/56e54462053b1b278b80b532c89c01f17e360fd5/Sony%20Aath.jpeg",
-    streamUrl: "https://edge2.roarzone.net:8447/roarzone/edge3/sonyaath/index.m3u8",
+    streamUrl:
+      "https://edge2.roarzone.net:8447/roarzone/edge3/sonyaath/index.m3u8",
     category: "entertainment",
   },
   {
@@ -339,7 +372,8 @@ export const channels: Channel[] = [
     name: "Colors Bangla Cinema",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/Colors%20Bangla%20Cinema.png",
     // ⚠ HTTP URL — proxy recommended
-    streamUrl: "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
+    streamUrl:
+      "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
     category: "entertainment",
   },
   {
@@ -367,7 +401,8 @@ export const channels: Channel[] = [
     id: "041",
     name: "G Series Drama",
     logo: "https://raw.githubusercontent.com/Rakib49/Rakibiptv/main/images%20(7).jpeg",
-    streamUrl: "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8",
+    streamUrl:
+      "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8",
     category: "entertainment",
   },
   {
@@ -384,7 +419,7 @@ export const channels: Channel[] = [
     logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKRmw0TG8nelaOLgOphjuIlocQ9lj2rDOb1g&s",
     streamUrl: "https://a-cdn.klowdtv.com/live1/smc_720p/chunks.m3u8",
     category: "entertainment",
-  }
+  },
 ];
 
 // --- Utility helpers ---
