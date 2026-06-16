@@ -23,7 +23,6 @@ const ALLOWED_HOSTS = [
   "226503.xyz",
   "pishow.tv",
   "vods2.aynaott.com",
-  "bozztv.com",
 ];
 
 /* ----------------------------
@@ -172,7 +171,13 @@ export async function GET(req: NextRequest) {
     }
 
     console.error("[Stream Proxy Error]", err);
-    return NextResponse.json({ error: "Stream fetch failed" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Stream fetch failed",
+        details: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 },
+    );
   }
 }
 
