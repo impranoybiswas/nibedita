@@ -64,7 +64,7 @@ export default function VideoPlayer({
 
   const isDash = streamType === "dash";
   const isLive = !isFinite(duration) || duration === 0;
-  const proxiedUrl = `${streamUrl}`;
+  const proxiedUrl = `/api/stream?url=${encodeURIComponent(streamUrl)}`;
 
   // ─── Controls auto-hide ───────────────────────────────────────────────────
   const scheduleHide = useCallback(() => {
