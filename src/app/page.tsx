@@ -3,10 +3,11 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import VideoPlayer from "@/components/VideoPlayer";
+
 import { channels, getCategories } from "@/data/channels";
 import Link from "next/link";
 import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
+import VideoPlayer from "@/components/VideoPlayer";
 
 export default function HomePage() {
   // --- Refs ---
@@ -57,12 +58,18 @@ export default function HomePage() {
 
   const hasActiveFilters = search !== "" || selectedCategory !== "all";
 
+  // --- Helper: Build proxied URL ---
+  const getProxiedUrl = (url: string) => {
+    if (!url) return "";
+    return `/api/stream?url=${encodeURIComponent(url)}`;
+  };
+
   return (
-    <main className="min-h-dvh max-w-md mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl">
+    <main className="min-h-dvh max-w-md mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl grid grid-cols-1">
       {/* Sticky Header & Player Section */}
       <section
         ref={playerRef}
-        className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10"
+        className="sticky top-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/10 col-span-1"
       >
         {/* Logo Header */}
         <header className="h-14 text-white flex items-center justify-center border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
@@ -82,9 +89,8 @@ export default function HomePage() {
         <div className="w-full p-4 shadow-2xl">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
             <VideoPlayer
-              streamUrl={currentChannel.streamUrl}
-              streamType="hls"
-              channelName={currentChannel.name}
+              url={getProxiedUrl(currentChannel.streamUrl)}
+              type="hls"
             />
           </div>
 
@@ -123,7 +129,7 @@ export default function HomePage() {
       </section>
 
       {/* Main Content Area */}
-      <section className="w-full px-4 py-6">
+      <section className="w-full px-4 py-6 ">
         {/* Controls: Search & Category Dropdown */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
           {/* Search Box */}

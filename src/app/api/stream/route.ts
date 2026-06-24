@@ -23,6 +23,8 @@ const ALLOWED_HOSTS = [
   "226503.xyz",
   "pishow.tv",
   "vods2.aynaott.com",
+  "wurl.com",
+  "cloudfront.net",
 ];
 
 /* ----------------------------
@@ -146,6 +148,8 @@ export async function GET(req: NextRequest) {
           "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
           "Access-Control-Allow-Origin": "*",
           "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
       });
     }
@@ -159,7 +163,7 @@ export async function GET(req: NextRequest) {
       headers: {
         "Content-Type": contentType || "video/MP2T",
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        "Cache-Control": "public, max-age=10, s-maxage=10", // Reduce cache for segments to 10s to stay fresh but still cached
       },
     });
   } catch (err) {
