@@ -58,12 +58,6 @@ export default function HomePage() {
 
   const hasActiveFilters = search !== "" || selectedCategory !== "all";
 
-  // --- Helper: Build proxied URL ---
-  const getProxiedUrl = (url: string) => {
-    if (!url) return "";
-    return `/api/stream?url=${encodeURIComponent(url)}`;
-  };
-
   return (
     <main className="min-h-dvh max-w-md mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl grid grid-cols-1">
       {/* Sticky Header & Player Section */}
@@ -88,10 +82,7 @@ export default function HomePage() {
         {/* Video Player Container */}
         <div className="w-full p-4 shadow-2xl">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
-            <VideoPlayer
-              url={getProxiedUrl(currentChannel.streamUrl)}
-              type="hls"
-            />
+            <VideoPlayer url={currentChannel.streamUrl} type="hls" />
           </div>
 
           {/* Current Channel Meta Info */}
