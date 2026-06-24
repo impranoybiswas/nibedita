@@ -37,18 +37,46 @@ export default function VideoPlayer({ url, type, title }: VideoPlayerProps) {
   }, [url]);
 
   return (
-    <MediaPlayer
-      ref={playerRef}
-      src={buildSrc(url, type) as string}
-      autoPlay
-      playsInline
-      className="w-full aspect-video"
-      title={title}
-      crossOrigin
-    >
-      <MediaProvider />
+    <>
+      {/* NO LIVE TEXT */}
+      <style jsx global>{`
+        vds-live-indicator,
+        [data-part="live-indicator"],
+        .vds-live-indicator {
+          display: none !important;
+        }
+        ,
+        vds-live-text,
+        [data-part="live-text"],
+        .vds-live-text {
+          display: none !important;
+        }
+        ,
+        .vds-live-button-text,
+        [data-part="live-button-text"],
+        .vds-live-button-text {
+          display: none !important;
+        }
+      `}</style>
+      <MediaPlayer
+        ref={playerRef}
+        src={buildSrc(url, type) as string}
+        autoPlay
+        playsInline
+        className="w-full aspect-video"
+        title={title}
+        crossOrigin
+        streamType="live"
+        
 
-      <DefaultVideoLayout icons={defaultLayoutIcons} smallLayoutWhen={false} />
-    </MediaPlayer>
+      >
+        <MediaProvider />
+
+        <DefaultVideoLayout
+          icons={defaultLayoutIcons}
+          smallLayoutWhen={false}
+        />
+      </MediaPlayer>
+    </>
   );
 }
