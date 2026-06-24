@@ -82,7 +82,11 @@ export default function HomePage() {
         {/* Video Player Container */}
         <div className="w-full p-4 shadow-2xl">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
-            <VideoPlayer url={currentChannel.streamUrl} type="hls" />
+            <VideoPlayer
+              url={currentChannel.streamUrl}
+              type="hls"
+              title={currentChannel.name}
+            />
           </div>
 
           {/* Current Channel Meta Info */}

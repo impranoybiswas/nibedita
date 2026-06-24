@@ -16,9 +16,10 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 interface VideoPlayerProps {
   url: string;
   type: "youtube" | "hls" | "video" | null;
+  title: string;
 }
 
-export default function VideoPlayer({ url, type }: VideoPlayerProps) {
+export default function VideoPlayer({ url, type, title }: VideoPlayerProps) {
   const playerRef = useRef<MediaPlayerInstance>(null);
 
   const buildSrc = (videoUrl: string, videoType: typeof type) => {
@@ -42,7 +43,7 @@ export default function VideoPlayer({ url, type }: VideoPlayerProps) {
       autoPlay
       playsInline
       className="w-full aspect-video"
-      title="Video Player"
+      title={title}
       crossOrigin
     >
       <MediaProvider />
