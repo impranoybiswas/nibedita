@@ -9,7 +9,7 @@ export interface Channel {
   category: ChannelCategory;
 }
 
-// Global Category Configuration 
+// Global Category Configuration
 export const CATEGORY_LABELS: Record<ChannelCategory, string> = {
   bdtv: "BD TV",
   news: "News",
@@ -24,8 +24,8 @@ export const channels: readonly Channel[] = [
   // ── BD TV ──────────────────────────────────────────────────────────────────
   {
     id: "001",
-    name: "BTV",
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Bangladesh_Television_Logo.svg/1280px-Bangladesh_Television_Logo.svg.png",
+    name: "Sangsad TV",
+    logo: "https://upload.wikimedia.org/wikipedia/bn/thumb/4/45/%E0%A6%B8%E0%A6%82%E0%A6%B8%E0%A6%A6_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B6_%E0%A6%9F%E0%A7%87%E0%A6%B2%E0%A6%BF%E0%A6%AD%E0%A6%BF%E0%A6%B6%E0%A6%A8%E0%A7%87%E0%A6%B0_%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A4%E0%A7%80%E0%A6%95.svg/960px-%E0%A6%B8%E0%A6%82%E0%A6%B8%E0%A6%A6_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B6_%E0%A6%9F%E0%A7%87%E0%A6%B2%E0%A6%BF%E0%A6%AD%E0%A6%BF%E0%A6%B6%E0%A6%A8%E0%A7%87%E0%A6%B0_%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A4%E0%A7%80%E0%A6%95.svg.png",
     streamUrl: "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8",
     category: "bdtv",
   },
@@ -33,7 +33,8 @@ export const channels: readonly Channel[] = [
     id: "008",
     name: "Ekushey TV",
     logo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d9/Ekushey_Television_Logo.svg/1280px-Ekushey_Television_Logo.svg.png",
-    streamUrl: "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
+    streamUrl:
+      "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
     category: "bdtv",
   },
   {
@@ -96,7 +97,8 @@ export const channels: readonly Channel[] = [
     id: "022",
     name: "Green TV",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/Green%20TV.png",
-    streamUrl: "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
+    streamUrl:
+      "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
     category: "bdtv",
   },
   {
@@ -110,7 +112,8 @@ export const channels: readonly Channel[] = [
     id: "031",
     name: "ATN Bangla",
     logo: "https://s3.aynaott.com/storage/eff41809fca04f7c1da5481e135d7913",
-    streamUrl: "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/atnbanglauk-off.stream/live-orgin/atnbanglauk-off.stream/chunks.m3u8",
+    streamUrl:
+      "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/atnbanglauk-off.stream/live-orgin/atnbanglauk-off.stream/chunks.m3u8",
     category: "bdtv",
   },
   {
@@ -268,28 +271,32 @@ export const channels: readonly Channel[] = [
     id: "050",
     name: "FIFA 1",
     logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
-    streamUrl: "https://a62dad94.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/39081f3a-49dd-4b90-b4e6-5b6d4c953fd0/2.m3u8",
+    streamUrl:
+      "https://a62dad94.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/39081f3a-49dd-4b90-b4e6-5b6d4c953fd0/2.m3u8",
     category: "sports",
   },
   {
     id: "051",
     name: "FIFA 2",
     logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
-    streamUrl: "https://37b4c228.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWZyX0ZJRkFQbHVzRnJlbmNoX0hMUw/6f5437c5-e015-4754-8476-c8c6d27d3a55/1.m3u8",
+    streamUrl:
+      "https://37b4c228.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWZyX0ZJRkFQbHVzRnJlbmNoX0hMUw/6f5437c5-e015-4754-8476-c8c6d27d3a55/1.m3u8",
     category: "sports",
   },
   {
     id: "052",
     name: "FIFA 3",
     logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
-    streamUrl: "https://4397879b.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/3312c83f-2ec4-4d31-a14c-6e21faae560d/2.m3u8",
+    streamUrl:
+      "https://4397879b.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/3312c83f-2ec4-4d31-a14c-6e21faae560d/2.m3u8",
     category: "sports",
   },
   {
     id: "053",
     name: "FIFA 4",
     logo: "https://pngimg.com/uploads/fifa/fifa_PNG26.png",
-    streamUrl: "https://d2w9q46ikgrcwx.cloudfront.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-of5cbk3sav3w5/845316b3-e102-41c5-809d-68199472c0d5/3.m3u8",
+    streamUrl:
+      "https://d2w9q46ikgrcwx.cloudfront.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-of5cbk3sav3w5/845316b3-e102-41c5-809d-68199472c0d5/3.m3u8",
     category: "sports",
   },
   {
@@ -347,7 +354,8 @@ export const channels: readonly Channel[] = [
     id: "026",
     name: "Sony Aath",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/56e54462053b1b278b80b532c89c01f17e360fd5/Sony%20Aath.jpeg",
-    streamUrl: "https://edge2.roarzone.net:8447/roarzone/edge3/sonyaath/index.m3u8",
+    streamUrl:
+      "https://edge2.roarzone.net:8447/roarzone/edge3/sonyaath/index.m3u8",
     category: "entertainment",
   },
   {
@@ -361,7 +369,8 @@ export const channels: readonly Channel[] = [
     id: "028",
     name: "Colors Bangla Cinema",
     logo: "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/Colors%20Bangla%20Cinema.png",
-    streamUrl: "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
+    streamUrl:
+      "http://198.195.239.50:8095/ColorsBanglaChinema/tracks-v1a1/mono.m3u8",
     category: "entertainment",
   },
   {
@@ -389,14 +398,16 @@ export const channels: readonly Channel[] = [
     id: "041",
     name: "G Series Drama",
     logo: "https://raw.githubusercontent.com/Rakib49/Rakibiptv/main/images%20(7).jpeg",
-    streamUrl: "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8",
+    streamUrl:
+      "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8",
     category: "entertainment",
   },
   {
     id: "045",
     name: "Gopal Bhar",
     logo: "https://cf-img-a-in.tosshub.com/sites/visualstory/wp/2025/02/GopalITG-1739292904624.jpg",
-    streamUrl: "https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8",
+    streamUrl:
+      "https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8",
     category: "entertainment",
   },
   {
