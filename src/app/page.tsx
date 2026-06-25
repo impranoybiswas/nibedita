@@ -1,29 +1,40 @@
 // page.tsx — Fixed Version
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import { channels, getCategories } from "@/data/channels";
 import Link from "next/link";
 import { ChevronDown, FilterIcon, Search, X } from "lucide-react";
-import VideoPlayer from "@/components/VideoPlayer";
+// import VideoPlayer from "@/components/VideoPlayer";
+const VideoPlayer = dynamic(() => import("@/components/VideoPlayer"), {
+  ssr: false,
+});
 
 export default function HomePage() {
   // --- Refs ---
   const playerRef = useRef<HTMLElement>(null);
 
   // --- States ---
-  const [currentChannel, setCurrentChannel] = useState(() => {
-    // if the user has a saved channel in localStorage, use that; otherwise default to the first channel
-    if (typeof window !== "undefined") {
-      const savedChannel = localStorage.getItem("current-channel");
-      if (savedChannel) {
-        return channels.find((c) => c.id === savedChannel) || channels[0];
+  const [currentChannel, setCurrentChannel] = useState(channels[0]);
+
+  // Hydrate selected channel from localStorage on mount
+  useEffect(() => {
+    const savedChannelId = localStorage.getItem("current-channel");
+    if (savedChannelId) {
+      const channel = channels.find((c) => c.id === savedChannelId);
+      if (channel) {
+        // Move state update out of the synchronous effect body to avoid cascading renders
+        Promise.resolve().then(() => {
+          setCurrentChannel((prev) =>
+            prev.id === channel.id ? prev : channel,
+          );
+        });
       }
     }
-    return channels[0]; // fallback to first channel or null if channels is empty
-  });
+  }, []);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -58,6 +69,12 @@ export default function HomePage() {
 
   const hasActiveFilters = search !== "" || selectedCategory !== "all";
 
+  // --- Helper: Build proxied URL ---
+  const getProxiedUrl = (url: string) => {
+    if (!url) return "";
+    return `/api/stream?url=${encodeURIComponent(url)}`;
+  };
+
   return (
     <main className="min-h-dvh max-w-md mx-auto bg-stone-950/20 text-white border-x border-white/5 shadow-2xl grid grid-cols-1">
       {/* Sticky Header & Player Section */}
@@ -83,7 +100,7 @@ export default function HomePage() {
         <div className="w-full p-4 shadow-2xl">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
             <VideoPlayer
-              url={currentChannel.streamUrl}
+              url={getProxiedUrl(currentChannel.streamUrl)}
               type="hls"
               title={currentChannel.name}
             />
